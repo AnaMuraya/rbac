@@ -111,12 +111,12 @@ exports.updateUser = async (res, req) => {
     await User.findByIdAndUpdate(userId, updateBody);
     const user = await User.findById(userId);
     res.status(200).json({
-      message: "User update successfully",
+      message: "User updated successfully",
       user,
     });
   } catch (err) {
     res.status(401).json({
-      message: "Something went wrong while updating" || err,
+      message: "Something went wrong while trying to updating" || err,
     });
   }
 };
@@ -131,7 +131,7 @@ exports.deleteUser = async (res, req) => {
     });
   } catch (err) {
     res.status(500).json({
-      message: "Something went wrong while deleting" || err,
+      message: "Something went wrong while trying to deleting" || err,
     });
   }
 };
