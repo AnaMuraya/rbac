@@ -1,11 +1,11 @@
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 const roles = require("../roles");
 
 const hashPassword = async (password) => {
-  const salt = await bcrypt.genSalt(10);
-  return await bcrypt.hash(password, salt);
+  // const salt = await bcrypt.genSalt(10);
+  return await bcrypt.hash(password, 10);
 };
 
 const validatePassword = async (plainPassword, hashedPassword) => {
@@ -14,6 +14,7 @@ const validatePassword = async (plainPassword, hashedPassword) => {
 
 exports.createUser = async (req, res, next) => {
   const { email, password, role } = req.body;
+  console.log(email, password, role)
   const hashedPassword = await hashPassword(password);
   const newUser = new User({
     email,
