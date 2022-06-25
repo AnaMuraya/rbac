@@ -39,6 +39,9 @@ app.use(async (res, req, next) => {
     res.locals.loggedInUser = await User.findById(userId);
     next();
   } else {
+    res.json({
+      message: "Token not available"
+    })
     next();
   }
 });
@@ -46,3 +49,7 @@ app.use("/", routes);
 app.listen(PORT, () => {
   console.log(`Server is listening on Port ${PORT}`);
 });
+
+
+
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmI2MTVhNjA2YjYzMGY0NGJhN2M5NWEiLCJpYXQiOjE2NTYxMDAyNjIsImV4cCI6MTY1NjExODI2Mn0.EkNWquN2hga-tTy_HxrAnKIkap9l0jzdMfTe597LobY
