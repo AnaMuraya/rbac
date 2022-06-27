@@ -14,10 +14,9 @@ const validatePassword = async (plainPassword, hashedPassword) => {
 
 exports.createUser = async (req, res, next) => {
   const { email, password, role } = req.body;
-  (!email||!password) &&
+  (!email || !password) &&
     res.status(500).json({
-      message:
-        `User credentials invalid, please make sure you have entered the email and password`,
+      message: `User credentials invalid, please make sure you have entered the email and password`,
     });
   const hashedPassword = await hashPassword(password);
   const newUser = new User({
@@ -68,24 +67,26 @@ exports.loginUser = async (req, res, next) => {
       expiresIn: "5h",
     });
     await User.findByIdAndUpdate(user._id, { accessToken });
-    res.status(200).json({
+    return res.status(200).json({
       message: "User logged in successfully",
       user,
       accessToken,
     });
   } catch (err) {
-    res.status(500).json({
+    return res.status(500).json({
       message: "Error logging in user",
       error: err,
     });
-    next(err);
+    // next(err);
   }
 };
 
 //get all users
 exports.getUsers = async (res, req, next) => {
+  console.log("checking users")
   const users = await User.find({});
-  res.status(200).json({
+  console.log("Users found")
+  return res.status(200).json({
     users,
   });
 };
@@ -143,31 +144,39 @@ exports.deleteUser = async (res, req) => {
 
 //checking if user is logged in
 exports.isLoggedIn = async (res, req, next) => {
+  console.log("checking is logged in")
   try {
     const user = res.locals.loggedInUser;
+    console.log(user.email)
     !user &&
       res.status(401).json({
-        message: "Please log in first",
+        error: "You need to be logged in to access this route",
       });
     req.user = user;
     next();
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    console.log(error)
+    return res.status(400).json({
+      message: "Error identifying the user"
+    })
   }
 };
 
 //checking if user has permission
 exports.grantAccess = (action, resource) => {
-  return async (res, req, next) => {
+  return async (req, res, next) => {
+    console.log('checking access')
     try {
       const permission = roles.can(req.user.role)[action](resource);
-      !permission.granted &&
-        res.status(401).json({
-          message: "You do the have permission to perform this action",
+      console.log('permission is there')
+      if (!permission.granted) {
+        return res.status(401).json({
+          error: "You don't have enough permission to perform this action",
         });
+      }
       next();
-    } catch (err) {
-      next(err);
+    } catch (error) {
+      next(error);
     }
   };
 };

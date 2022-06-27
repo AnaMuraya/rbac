@@ -33,14 +33,22 @@ app.use(async (req, res, next) => {
       });
     }
     res.locals.loggedInUser = await User.findById(userId);
-    next();
+    console.log(res.locals);
+    return res.locals.loggedInUser;
+    next()
   } else {
-    next();
+    return res.status(400).json({
+      message: "Error with accessing the users",
+    });
   }
 });
 app.use("/", routes);
+// app.get('/', function (req, res) {
+//   // Sending multiples locals
+//   res.locals.name = 'Gourav';
+//   console.log(res.locals);
+//   res.end();
+// });
 app.listen(PORT, () => {
   console.log(`Server is listening on Port ${PORT}`);
 });
-
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmI2MTVhNjA2YjYzMGY0NGJhN2M5NWEiLCJpYXQiOjE2NTYxMDAyNjIsImV4cCI6MTY1NjExODI2Mn0.EkNWquN2hga-tTy_HxrAnKIkap9l0jzdMfTe597LobY
