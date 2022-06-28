@@ -77,15 +77,12 @@ exports.loginUser = async (req, res, next) => {
       message: "Error logging in user",
       error: err,
     });
-    // next(err);
   }
 };
 
 //get all users
-exports.getUsers = async (res, req, next) => {
-  console.log("checking users")
+exports.getUsers = async (req, res, next) => {
   const users = await User.find({});
-  console.log("Users found")
   return res.status(200).json({
     users,
   });
@@ -143,11 +140,10 @@ exports.deleteUser = async (res, req) => {
 };
 
 //checking if user is logged in
-exports.isLoggedIn = async (res, req, next) => {
-  console.log("checking is logged in")
+exports.isLoggedIn = async (req, res, next) => {
   try {
     const user = res.locals.loggedInUser;
-    console.log(user.email)
+    console.log(user.email);
     !user &&
       res.status(401).json({
         error: "You need to be logged in to access this route",
@@ -155,23 +151,20 @@ exports.isLoggedIn = async (res, req, next) => {
     req.user = user;
     next();
   } catch (error) {
-    console.log(error)
     return res.status(400).json({
-      message: "Error identifying the user"
-    })
+      message: "Error identifying the user",
+    });
   }
 };
 
 //checking if user has permission
 exports.grantAccess = (action, resource) => {
   return async (req, res, next) => {
-    console.log('checking access')
     try {
-      const permission = roles.can(req.user.role)[action](resource);
-      console.log('permission is there')
+      const permission = roles.ac.can(req.user.role)[action](resource);
       if (!permission.granted) {
         return res.status(401).json({
-          error: "You don't have enough permission to perform this action",
+          error: "You don't have permission to perform this action",
         });
       }
       next();

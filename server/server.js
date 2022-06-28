@@ -33,9 +33,7 @@ app.use(async (req, res, next) => {
       });
     }
     res.locals.loggedInUser = await User.findById(userId);
-    console.log(res.locals);
-    return res.locals.loggedInUser;
-    next()
+    next();
   } else {
     return res.status(400).json({
       message: "Error with accessing the users",
@@ -43,12 +41,7 @@ app.use(async (req, res, next) => {
   }
 });
 app.use("/", routes);
-// app.get('/', function (req, res) {
-//   // Sending multiples locals
-//   res.locals.name = 'Gourav';
-//   console.log(res.locals);
-//   res.end();
-// });
+
 app.listen(PORT, () => {
   console.log(`Server is listening on Port ${PORT}`);
 });
